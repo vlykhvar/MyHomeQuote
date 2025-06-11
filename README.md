@@ -1,15 +1,6 @@
 
 # MyHomeQuote – In-Memory User Score API
 
-## 🚀 Features
-
-- `PUT /setinfo` – Submit a user's score for a level
-- `GET /userinfo/{userId}` – Retrieve top 20 scores by a user across all levels
-- `GET /levelinfo/{levelId}` – Retrieve top 20 users for a specific level
-- Swagger UI for API documentation
-
----
-
 ## ⚙️ Building and Running the Project
 
 ### 🔨 Build with Maven
