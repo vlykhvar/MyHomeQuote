@@ -1,11 +1,13 @@
 #!/bin/bash
 
-JAR_FILE=$(ls target/*.jar | head -n 1)
+JAR_NAME="myhomequote.jar"
 
-if [ -f "$JAR_FILE" ]; then
-  echo "Running $JAR_FILE"
-  java -jar "$JAR_FILE"
+if [ -f "target/$JAR_NAME" ]; then
+  echo "🚀 Starting application: $JAR_NAME"
+  java -jar "target/$JAR_NAME"
 else
-  echo "JAR file not found. Please build the project first."
-  exit 1
+  echo "❌ JAR file not found: target/$JAR_NAME"
+  echo "💡 Try building the project first: ./build.sh"
+   read -p "Press Enter to exit..."
+    exit 1
 fi

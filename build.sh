@@ -9,5 +9,6 @@ if [ $BUILD_STATUS -eq 0 ]; then
   echo "Build successful. JAR file: target/*.jar"
 else
   echo "Build failed"
-  exit 1
+   read -p "Press Enter to exit..."
+    exit 1
 fi
