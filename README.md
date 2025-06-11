@@ -6,9 +6,6 @@
 - `PUT /setinfo` – Submit a user's score for a level
 - `GET /userinfo/{userId}` – Retrieve top 20 scores by a user across all levels
 - `GET /levelinfo/{levelId}` – Retrieve top 20 users for a specific level
-- All data is stored in memory (no database)
-- Supports concurrent/multithreaded access
-- Trim logic keeps only top 20 results per user and per level
 - Swagger UI for API documentation
 
 ---
