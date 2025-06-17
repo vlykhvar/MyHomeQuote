@@ -11,14 +11,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.test.myhomequote.mapper.InfoMapper.*;
 
 @RestController
 @RequestMapping("/info")
+@Validated
 @Tag(name = "Info API", description = "Set and retrieve user/level score info")
 public class InfoController {
 
@@ -31,7 +34,7 @@ public class InfoController {
             @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content)
     })
     @PutMapping("/setinfo")
-    public void setUserInfo(@RequestBody InfoRequest infoRequest) {
+    public void setUserInfo(@Valid @RequestBody InfoRequest infoRequest) {
         infoService.setInfo(toInfoBO(infoRequest));
     }
 

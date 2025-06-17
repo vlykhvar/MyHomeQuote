@@ -1,0 +1,122 @@
+{
+	"info": {
+		"_postman_id": "dcfeaad4-d3b0-4881-b6b9-f277ad6d5e09",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32587908"
+	},
+	"item": [
+		{
+			"name": "setInfo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const MAX_ITERATIONS = 100;\r",
+							"const MAX_USER_ID = 5;\r",
+							"const MAX_LEVEL_ID = 5;\r",
+							"const DELAY_MS = 300;\r",
+							"\r",
+							"let i = 0;\r",
+							"\r",
+							"function sendNextRequest() {\r",
+							"    if (i >= MAX_ITERATIONS) {\r",
+							"        console.log(\"✅ Все запросы отправлены\");\r",
+							"        return;\r",
+							"    }\r",
+							"\r",
+							"    const body = {\r",
+							"        user_id: Math.floor(Math.random() * MAX_USER_ID) + 1,  // от 1 до 5\r",
+							"        level_id: Math.floor(Math.random() * MAX_LEVEL_ID) + 1, // от 1 до 5\r",
+							"        result: Math.floor(Math.random() * 51) // от 0 до 50\r",
+							"    };\r",
+							"\r",
+							"    pm.sendRequest({\r",
+							"        url: 'http://localhost:8080/result/info/setinfo',\r",
+							"        method: 'PUT',\r",
+							"        header: {\r",
+							"            'Content-Type': 'application/json'\r",
+							"        },\r",
+							"        body: {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify(body)\r",
+							"        }\r",
+							"    }, function (err, res) {\r",
+							"        console.log(`📤 [${i + 1}] user_id=${body.user_id}, level_id=${body.level_id}, result=${body.result} → status: ${res?.status || 'no response'}`);\r",
+							"        \r",
+							"        i++;\r",
+							"        setTimeout(sendNextRequest, DELAY_MS); \r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"sendNextRequest();"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/result/info/setinfo",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"result",
+						"info",
+						"setinfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get info by level id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/result/info/levelinfo/{levelId}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"result",
+						"info",
+						"levelinfo",
+						"{levelId}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get info by user id",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "localhost:8080",
+			"type": "default"
+		}
+	]
+}

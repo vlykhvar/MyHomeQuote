@@ -1,6 +1,13 @@
 
 # MyHomeQuote – In-Memory User Score API
 
+## ✅ Requirements
+
+- JDK 11
+- Maven 3.x
+
+---
+
 ## ⚙️ Building and Running the Project
 
 ### 🔨 Build with Maven
@@ -37,7 +44,7 @@ Tomcat started on port(s): 8080 (http) with context path '/result'
 Started MyHomeQuoteApplication
 ```
 
-This means your application is up and running.
+This means application is up and running.
 ---
 
 ## 📚 API Documentation (Swagger UI)
@@ -50,9 +57,15 @@ You’ll find all endpoints, request/response formats, and can interact with the
 
 ---
 
-## ✅ Requirements
+### 🧪 API Testing
 
-- JDK 11
-- Maven 3.x
+A Postman collection is available to test and interact with the API endpoints.
 
----
+**Collection path:** `provisioning/postman/MyHomeQuote.postman_collection`
+
+To use the collection:
+
+1. Open Postman
+2. Click **Import**
+3. Select the file from the path above
+4. Use the predefined requests (e.g. `PUT /result/info/setinfo`) to test the API

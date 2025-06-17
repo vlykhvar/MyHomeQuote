@@ -1,9 +1,15 @@
 package com.test.myhomequote.api.dto.resonse;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class InfoResponse {
 
+    @JsonProperty("user_id")
     private Long userId;
+
+    @JsonProperty("level_id")
     private Long levelId;
+
     private Long result;
 
     public Long getUserId() {

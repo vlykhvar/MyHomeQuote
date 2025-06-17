@@ -1,9 +1,22 @@
 package com.test.myhomequote.api.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 public class InfoRequest {
 
+    @JsonProperty("user_id")
+    @NotNull
+    @Positive
     private Long userId;
+
+    @JsonProperty("level_id")
+    @NotNull
+    @Positive
     private Long levelId;
+
     private Long result;
 
     public Long getUserId() {

@@ -16,7 +16,7 @@ public class InfoMapper {
     public static InfoBO toInfoBO(InfoRequest infoRequest) {
         var infoBO = new InfoBO();
         infoBO.setUserId(infoRequest.getUserId());
-        infoBO.setUserId(infoRequest.getLevelId());
+        infoBO.setLevelId(infoRequest.getLevelId());
         infoBO.setResult(infoRequest.getResult());
         return infoBO;
     }
@@ -28,7 +28,7 @@ public class InfoMapper {
     public static InfoResponse toInfoResponse(InfoBO infoBO) {
         var response = new InfoResponse();
         response.setUserId(infoBO.getUserId());
-        response.setUserId(infoBO.getUserId());
+        response.setLevelId(infoBO.getLevelId());
         response.setResult(infoBO.getResult());
         return response;
     }
