@@ -20,11 +20,6 @@ mvn clean install
 
 This will create the executable JAR in the `target/` directory.
 
-> ✅ Alternatively, use the helper script:
-```bash
-./build.sh
-```
-
 ### ▶️ Run the Application
 
 After a successful build, run the JAR with:
@@ -32,7 +27,7 @@ After a successful build, run the JAR with:
 ```bash
 java -jar target/myhomequote.jar
 ```
-> ✅ Alternatively, use the helper script:
+>  Alternatively, use the helper script:
 ```bash
 ./run.sh
 ```

@@ -1,13 +1,12 @@
-#!/bin/bash
+set -e
 
-JAR_NAME="myhomequote.jar"
-
-if [ -f "target/$JAR_NAME" ]; then
-  echo "Starting application: $JAR_NAME"
-  java -jar "target/$JAR_NAME"
-else
-  echo "JAR file not found: target/$JAR_NAME"
-  echo "Try building the project first: ./build.sh"
-   read -p "Press Enter to exit..."
-    exit 1
+if ! command -v mvn &> /dev/null; then
+  echo "Maven is not installed or not in PATH"
+  exit 1
 fi
+
+echo "🔧 Building the project with local Maven..."
+mvn clean install
+
+echo "🚀 Starting the Spring Boot application..."
+mvn spring-boot:run
