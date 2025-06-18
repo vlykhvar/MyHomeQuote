@@ -46,6 +46,9 @@ public class InfoService {
     public List<InfoBO> getResultInfoByUserId(Long userId) {
         log.info("get result info by user id {}", userId);
         var optionalResultsByLevelId = resultService.getRepository(ERepositoryType.USER).getById(userId);
+        if (optionalResultsByLevelId.isEmpty()) {
+            return Collections.emptyList();
+        }
         var infoBOs = new ArrayList<InfoBO>();
         optionalResultsByLevelId.get().descendingMap().forEach((result, levelIds) -> {
             for (var levelIIter = levelIds.descendingIterator(); levelIIter.hasNext(); ) {
