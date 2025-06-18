@@ -3,49 +3,67 @@ package com.test.myhomequote.data;
 import common.ERepositoryType;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Comparator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 public abstract class ResultRepository {
 
     @Value("${MyHomeQuote.setting.repositrory.max-capacity}")
     private Integer MAX_CAPACITY;
-    protected ConcurrentHashMap<Long, ConcurrentSkipListMap<Long, Long>> repository = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<Long, ConcurrentSkipListMap<Long, ConcurrentSkipListSet<Long>>> repository = new ConcurrentHashMap<>();
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     public abstract ERepositoryType getType();
 
     public void add(Long outerId, Long innerId, Long result) {
+        repository.computeIfAbsent(outerId, id -> new ConcurrentSkipListMap<>())
+                .computeIfAbsent(result, id -> new ConcurrentSkipListSet<>())
+                .add(innerId);
         lock.writeLock().lock();
         try {
-            repository.computeIfAbsent(outerId, id -> new ConcurrentSkipListMap<>())
-                    .put(innerId, result);
             trimToMax(outerId, innerId);
         } finally {
             lock.writeLock().unlock();
         }
     }
 
-    public ConcurrentSkipListMap<Long, Long> getById(Long outerId) {
-        return repository.getOrDefault(outerId, new ConcurrentSkipListMap<>());
+    public Optional<ConcurrentSkipListMap<Long, ConcurrentSkipListSet<Long>>> getById(Long outerId) {
+        lock.readLock().lock();
+        try {
+            return Optional.of(repository.get(outerId));
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     protected void trimToMax(Long outerId, Long innerId) {
-        if (repository.containsKey(outerId) &&
-                repository.get(outerId).containsKey(innerId) &&
-                repository.get(outerId).size() >= MAX_CAPACITY) {
-            ConcurrentSkipListMap<Long, Long> dataByInnerId = repository.get(outerId);
-            var trimmedData = new ConcurrentSkipListMap<Long, Long>();
-            dataByInnerId.entrySet().stream()
-                    .sorted(Map.Entry.<Long, Long>comparingByValue().reversed()
-                            .thenComparing(Map.Entry::getKey, Comparator.reverseOrder()))
-                    .limit(20)
-                    .forEachOrdered(e -> trimmedData.put(e.getKey(), e.getValue()));
-            repository.put(outerId, trimmedData);
+        ConcurrentSkipListMap<Long, ConcurrentSkipListSet<Long>> innerIdsByResult = repository.get(outerId);
+        if (isNull(innerIdsByResult)) {
+            return;
+        }
+        int size = innerIdsByResult.values().stream().mapToInt(ConcurrentSkipListSet::size).sum();
+        if (size <= MAX_CAPACITY) {
+            return;
+        }
+        Iterator<Map.Entry<Long, ConcurrentSkipListSet<Long>>> resultIterator = innerIdsByResult.entrySet().iterator();
+        while (resultIterator.hasNext() && size > MAX_CAPACITY) {
+            Map.Entry<Long, ConcurrentSkipListSet<Long>> entry = resultIterator.next();
+            ConcurrentSkipListSet<Long> innerSet = entry.getValue();
+            Iterator<Long> innerIterator = innerSet.iterator();
+            while (innerIterator.hasNext() && size > MAX_CAPACITY) {
+                innerIterator.next();
+                innerIterator.remove();
+                size--;
+            }
+            if (innerSet.isEmpty()) {
+                resultIterator.remove();
+            }
         }
     }
 }
