@@ -29,29 +29,30 @@ public class InfoService {
 
     public List<InfoBO> getResultInfoByLevelId(Long levelId) {
         log.info("get result info by level id {}", levelId);
-        var resultsByUserId = resultService.getRepository(ERepositoryType.LEVEL).getById(levelId);
+        var optionalResultsByUserId = resultService.getRepository(ERepositoryType.LEVEL).getById(levelId);
+        if (optionalResultsByUserId.isEmpty()) {
+            return Collections.emptyList();
+        }
         var infoBOs = new ArrayList<InfoBO>();
-        resultsByUserId.forEach((userId, result) -> {
+        optionalResultsByUserId.get().descendingMap().forEach((result, userIds) -> {
+            for (var userIdIter = userIds.descendingIterator(); userIdIter.hasNext(); ) {
+                Long userId = userIdIter.next();
                 infoBOs.add(new InfoBO(userId, levelId, result));
-            });
-        return infoBOs.stream()
-                .sorted(
-                        Comparator.comparing(InfoBO::getResult).reversed()
-                                .thenComparing(InfoBO::getUserId))
-                .collect(Collectors.toList());
+            }
+        });
+        return infoBOs;
     }
 
     public List<InfoBO> getResultInfoByUserId(Long userId) {
         log.info("get result info by user id {}", userId);
-        var resultsByLevelId = resultService.getRepository(ERepositoryType.USER).getById(userId);
+        var optionalResultsByLevelId = resultService.getRepository(ERepositoryType.USER).getById(userId);
         var infoBOs = new ArrayList<InfoBO>();
-        resultsByLevelId.forEach((levelId, result) -> {
+        optionalResultsByLevelId.get().descendingMap().forEach((result, levelIds) -> {
+            for (var levelIIter = levelIds.descendingIterator(); levelIIter.hasNext(); ) {
+                Long levelId = levelIIter.next();
                 infoBOs.add(new InfoBO(userId, levelId, result));
+            }
         });
-        return infoBOs.stream()
-                .sorted(
-                        Comparator.comparing(InfoBO::getResult).reversed()
-                                .thenComparing(InfoBO::getLevelId).reversed())
-                .collect(Collectors.toList());
+        return infoBOs;
     }
 }
